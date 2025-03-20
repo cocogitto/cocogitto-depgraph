@@ -1,0 +1,13 @@
+[package]
+name = "cocogitto-depgraph"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cargo_metadata = "0.19.2"
+petgraph = "0.7.1"
+speculoos = "0.12.0"
+
+[[test]]
+name = "cargo_workspace"
+path = "tests/cargo_workspace.rs"
