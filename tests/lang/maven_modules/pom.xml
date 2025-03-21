@@ -9,9 +9,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>core</module>
-        <module>service</module>
-        <module>web</module>
+        <module>package-a</module>
+        <module>package-b</module>
+        <module>package-c</module>
+        <module>package-d</module>
+        <module>package-e</module>
     </modules>
 
     <dependencyManagement>

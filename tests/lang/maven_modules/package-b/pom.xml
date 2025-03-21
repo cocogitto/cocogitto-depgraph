@@ -10,4 +10,10 @@
     </parent>
 
     <artifactId>package-b</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>package-c</artifactId>
+        </dependency>
+    </dependencies>
 </project>

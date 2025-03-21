@@ -7,7 +7,9 @@ edition = "2024"
 cargo_metadata = "0.19.2"
 petgraph = "0.7.1"
 speculoos = "0.12.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde-xml-rs = "0.6.0"
 
 [[test]]
 name = "cargo_workspace"
-path = "tests/cargo_workspace.rs"
+path = "tests/resolver_tests.rs"

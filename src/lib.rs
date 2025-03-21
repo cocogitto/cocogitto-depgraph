@@ -1,9 +1,15 @@
-use std::path::Path;
+use crate::resolvers::DependencyResolver;
+use crate::resolvers::cargo::CargoResolver;
+use crate::resolvers::maven::MavenResolver;
 use petgraph::algo::toposort;
 use petgraph::graphmap::DiGraphMap;
+use std::path::Path;
+
+mod resolvers;
 
 pub enum DepGraphResolver {
-    Cargo
+    Cargo,
+    Maven,
 }
 
 impl DepGraphResolver {
@@ -21,41 +27,18 @@ impl DepGraphResolver {
             }
         }
 
-        toposort(&graph, None).expect("Cycle detected! Dependencies must be acyclic.")
+        toposort(&graph, None)
+            .expect("Cycle detected! Dependencies must be acyclic.")
             .into_iter()
             .cloned()
             .collect()
     }
 
     fn get_dependencies(&self, path: impl AsRef<Path>) -> Vec<(String, Vec<String>)> {
+        let path = path.as_ref();
         match self {
-            DepGraphResolver::Cargo => {
-                Self::resolve_cargo_workspace_dependencies(path)
-            }
+            DepGraphResolver::Cargo => CargoResolver.get_dependencies(path),
+            DepGraphResolver::Maven => MavenResolver.get_dependencies(path),
         }
-    }
-
-
-    fn resolve_cargo_workspace_dependencies(path: impl AsRef<Path> + Sized) -> Vec<(String, Vec<String>)> {
-        let metadata = cargo_metadata::MetadataCommand::new()
-            .manifest_path(path.as_ref())
-            .exec()
-            .unwrap();
-
-        let cargo_packages = metadata.workspace_packages();
-        let mut deps: Vec<(String, Vec<String>)> = Vec::with_capacity(cargo_packages.len());
-
-        for p in &cargo_packages {
-            let packages_depedencies: Vec<_> = p
-                .dependencies
-                .iter()
-                .filter(|d| cargo_packages.iter().any(|p| p.name == d.name))
-                .collect();
-
-            let package_deps = packages_depedencies.iter().map(|d| d.name.clone()).collect();
-            deps.push((p.name.clone(), package_deps));
-        }
-
-        deps
     }
 }
