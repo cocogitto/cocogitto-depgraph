@@ -44,7 +44,8 @@ impl DependencyResolver for MavenResolver {
         root_path.pop();
 
         let mut dependencies = vec![];
-        for module in root.modules.into_iter().flat_map(|m| m.module) {
+        let modules: Vec<_> = root.modules.into_iter().flat_map(|m| m.module).collect();
+        for module in &modules {
             let pom = root_path.join(module).join("pom.xml");
             let pom = File::open(pom).unwrap();
             let module: Project = serde_xml_rs::from_reader(pom).unwrap();
@@ -53,6 +54,7 @@ impl DependencyResolver for MavenResolver {
                 .map(|d| d.dependency)
                 .unwrap_or_default()
                 .into_iter()
+                .filter(|d| modules.contains(&d.artifact_id))
                 .map(|d| d.artifact_id)
                 .collect();
             dependencies.push((module.artifact_id, deps));

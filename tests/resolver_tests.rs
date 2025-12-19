@@ -52,3 +52,18 @@ fn mvn_workspace() {
         "package-a",
     ])
 }
+
+#[test]
+fn npm_workspace() {
+    let resolver = DepGraphResolver::Npm;
+    let dependencies = resolver.topological_sort("tests/lang/npm_workspace/package.json");
+    let dependencies: Vec<_> = dependencies.iter().map(String::as_str).collect();
+
+    assert_that!(dependencies).is_equal_to(vec![
+        "package-e",
+        "package-d",
+        "package-c",
+        "package-b",
+        "package-a",
+    ])
+}

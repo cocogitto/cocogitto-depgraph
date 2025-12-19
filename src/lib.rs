@@ -1,6 +1,7 @@
 use crate::resolvers::DependencyResolver;
 use crate::resolvers::cargo::CargoResolver;
 use crate::resolvers::maven::MavenResolver;
+use crate::resolvers::npm::NpmResolver;
 use petgraph::algo::toposort;
 use petgraph::graphmap::DiGraphMap;
 use std::path::Path;
@@ -10,6 +11,7 @@ mod resolvers;
 pub enum DepGraphResolver {
     Cargo,
     Maven,
+    Npm,
 }
 
 impl DepGraphResolver {
@@ -39,6 +41,7 @@ impl DepGraphResolver {
         match self {
             DepGraphResolver::Cargo => CargoResolver.get_dependencies(path),
             DepGraphResolver::Maven => MavenResolver.get_dependencies(path),
+            DepGraphResolver::Npm => NpmResolver.get_dependencies(path),
         }
     }
 }
